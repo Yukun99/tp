@@ -17,8 +17,10 @@ public abstract class UiTest extends ApplicationTest {
 
     @BeforeAll
     public static void headlessSetUp() {
+        System.setProperty("testfx.robot", "glass");
         System.setProperty("testfx.headless", "true");
-        System.setProperty("glass.platform", "Monocle");
+        System.setProperty("prism.order", "sw");
+        System.setProperty("prism.text", "t2k");
     }
 
     @BeforeEach
@@ -27,7 +29,7 @@ public abstract class UiTest extends ApplicationTest {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.show();
     }
 
