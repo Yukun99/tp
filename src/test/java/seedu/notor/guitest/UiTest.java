@@ -18,6 +18,7 @@ public abstract class UiTest extends ApplicationTest {
     @BeforeAll
     public static void headlessSetUp() {
         System.setProperty("testfx.headless", "true");
+        System.setProperty("glass.platform", "Monocle");
     }
 
     @BeforeEach
