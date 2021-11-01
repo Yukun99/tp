@@ -20,11 +20,18 @@ import seedu.notor.logic.parser.exceptions.ParseException;
 import seedu.notor.model.Notable;
 import seedu.notor.model.Notor;
 import seedu.notor.model.group.Group;
+import seedu.notor.model.group.SubGroup;
+import seedu.notor.model.group.SuperGroup;
 import seedu.notor.model.person.Person;
+import seedu.notor.ui.listpanel.GroupListPanel;
+import seedu.notor.ui.listpanel.ListPanel;
+import seedu.notor.ui.listpanel.PersonListPanel;
+import seedu.notor.ui.listpanel.SubgroupListPanel;
 import seedu.notor.ui.note.GeneralNoteWindow;
 import seedu.notor.ui.note.GroupNoteWindow;
 import seedu.notor.ui.note.NoteWindow;
 import seedu.notor.ui.note.PersonNoteWindow;
+import seedu.notor.ui.view.ViewPanel;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -43,22 +50,20 @@ public class MainWindow extends UiPart<Stage> {
 
     // Independent Ui parts residing in this Ui container
     private final HelpWindow helpWindow;
-    private PersonListPanel personListPanel;
     private ResultDisplay resultDisplay;
-    private NotePane notePane;
 
 
     @FXML
     private StackPane commandBoxPlaceholder;
 
-    //@FXML
-    //private StackPane notePanePlaceholder;
+    @FXML
+    private StackPane notePanePlaceholder;
 
     @FXML
     private MenuItem helpMenuItem;
 
     @FXML
-    private StackPane personListPanelPlaceholder;
+    private StackPane listPanelPlaceholder;
 
     @FXML
     private StackPane resultDisplayPlaceholder;
@@ -130,8 +135,8 @@ public class MainWindow extends UiPart<Stage> {
      * Fills up all the placeholders of this window.
      */
     void fillInnerParts() {
-        personListPanel = new PersonListPanel(logic.getFilteredPersonList());
-        personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
+        ListPanel<Person> listPanel = new PersonListPanel(logic.getFilteredPersonList());
+        listPanelPlaceholder.getChildren().add(listPanel.getRoot());
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
@@ -142,8 +147,8 @@ public class MainWindow extends UiPart<Stage> {
         CommandBox commandBox = new CommandBox(this::executeCommand);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
 
-        NotePane notePane = new NotePane();
-        //notePanePlaceholder.getChildren().add(notePane.getRoot());
+        ViewPanel viewPane = new ViewPanel(logic.getNotor().getNote());
+        notePanePlaceholder.getChildren().add(viewPane.getRoot());
     }
 
     /**
@@ -170,6 +175,10 @@ public class MainWindow extends UiPart<Stage> {
         }
     }
 
+    /**
+     * Opens NoteWindow if it is currently not opened. Focuses NoteWindow if otherwise.
+     * @param noteWindow Note Window.
+     */
     private void manageNoteWindow(NoteWindow noteWindow) {
         if (!NoteWindow.OPENED_NOTE_WINDOWS.contains(noteWindow)) {
             NoteWindow.OPENED_NOTE_WINDOWS.add(noteWindow);
@@ -180,26 +189,23 @@ public class MainWindow extends UiPart<Stage> {
         }
     }
 
-    @FXML
     private void handleNote(Person person, Logic logic) {
         NoteWindow noteWindow = new PersonNoteWindow(person, logic, resultDisplay);
         manageNoteWindow(noteWindow);
     }
 
-    @FXML
     private void handleNote(Group group, Logic logic) {
         NoteWindow noteWindow = new GroupNoteWindow(group, logic, resultDisplay);
         manageNoteWindow(noteWindow);
     }
 
-    @FXML
     private void handleNote(Notor notor, Logic logic) {
-        NoteWindow noteWindow = new GeneralNoteWindow(notor, logic, resultDisplay);
+        NoteWindow noteWindow = new GeneralNoteWindow(notor, logic, resultDisplay, notePanePlaceholder);
         manageNoteWindow(noteWindow);
     }
 
     /**
-     * Handles opening of Person Note or Group Note.
+     * Handles opening of Person Note, Group Note or general Note.
      * @param notable The object that is notable.
      * @param logic The Logic of Notor.
      */
@@ -250,7 +256,9 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     public PersonListPanel getPersonListPanel() {
-        return personListPanel;
+        PersonListPanel listPanel = new PersonListPanel(logic.getFilteredPersonList());
+        listPanelPlaceholder.getChildren().add(listPanel.getRoot());
+        return listPanel;
     }
 
     /**
@@ -263,13 +271,21 @@ public class MainWindow extends UiPart<Stage> {
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
+            if (logic.isPersonList()) {
+                ListPanel<Person> listPanel = new PersonListPanel(logic.getFilteredPersonList());
+                listPanelPlaceholder.getChildren().add(listPanel.getRoot());
+            } else if (logic.isSuperGroupList()) {
+                ListPanel<SuperGroup> listPanel = new GroupListPanel(logic.getFilteredSuperGroupList());
+                listPanelPlaceholder.getChildren().add(listPanel.getRoot());
+            } else {
+                ListPanel<SubGroup> listPanel = new SubgroupListPanel(logic.getFilteredSubGroupList());
+                listPanelPlaceholder.getChildren().add(listPanel.getRoot());
+            }
             if (commandResult.isShowHelp()) {
                 handleHelp();
             }
             if (commandResult.isShowNote()) {
-                if (commandResult.getNotable() != null) {
-                    handleNote(commandResult.getNotable(), logic);
-                }
+                handleNote(commandResult.getNotable(), logic);
             }
             if (commandResult.isExit()) {
                 handleExit();

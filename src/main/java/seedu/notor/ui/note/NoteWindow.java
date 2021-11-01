@@ -33,10 +33,10 @@ public abstract class NoteWindow extends UiPart<Stage> {
     private static final int CENTER_Y = (SCREEN_Y - HEIGHT) / 2;
     private static final String FXML = "NoteWindow.fxml";
     private static final Modifier SHORTCUT = KeyCombination.SHORTCUT_DOWN;
-    private static final KeyCombination SAVE_KEY = new KeyCodeCombination(KeyCode.S, SHORTCUT);
-    private static final KeyCombination EXIT_AND_SAVE_KEY = new KeyCodeCombination(KeyCode.Q, SHORTCUT);
-    private static final KeyCombination EXIT_KEY = new KeyCodeCombination(KeyCode.W, SHORTCUT);
-    private static final KeyCombination TIME_STAMP_KEY = new KeyCodeCombination(KeyCode.T, SHORTCUT);
+    public static final KeyCombination SAVE_KEY = new KeyCodeCombination(KeyCode.S, SHORTCUT);
+    public static final KeyCombination EXIT_AND_SAVE_KEY = new KeyCodeCombination(KeyCode.Q, SHORTCUT);
+    public static final KeyCombination EXIT_KEY = new KeyCodeCombination(KeyCode.W, SHORTCUT);
+    public static final KeyCombination TIME_STAMP_KEY = new KeyCodeCombination(KeyCode.T, SHORTCUT);
 
     @FXML
     protected TextArea noteTextArea;
@@ -143,8 +143,6 @@ public abstract class NoteWindow extends UiPart<Stage> {
         handleSave();
         handleExit();
     }
-
-
 
     private void timeStampNote() {
         int noOfCharsTillCursor = noteTextArea.getCaretPosition();

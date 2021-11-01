@@ -40,7 +40,7 @@ public class MainApp extends Application {
 
     public static final Version VERSION = new Version(0, 2, 0, true);
 
-    private static final Logger logger = LogsCenter.getLogger(MainApp.class);
+    protected final Logger logger = LogsCenter.getLogger(MainApp.class);
 
     protected Ui ui;
     protected Logic logic;
@@ -80,7 +80,7 @@ public class MainApp extends Application {
      * The data from the sample Notor will be used instead if {@code storage}'s notor is not found,
      * or an empty Notor will be used instead if errors occur when reading {@code storage}'s notor.
      */
-    private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
+    protected Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         Optional<ReadOnlyNotor> notorOptional;
         ReadOnlyNotor initialData;
         try {
@@ -100,7 +100,7 @@ public class MainApp extends Application {
         return new ModelManager(initialData, userPrefs);
     }
 
-    private void initLogging(Config config) {
+    protected void initLogging(Config config) {
         LogsCenter.init(config);
     }
 

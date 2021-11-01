@@ -1,25 +1,29 @@
 package seedu.notor.ui.note;
 
 import javafx.fxml.FXML;
+import javafx.scene.layout.StackPane;
 import seedu.notor.logic.Logic;
 import seedu.notor.logic.commands.exceptions.CommandException;
 import seedu.notor.model.Notor;
 import seedu.notor.model.common.Note;
 import seedu.notor.ui.ConfirmationWindow;
 import seedu.notor.ui.ResultDisplay;
+import seedu.notor.ui.view.ViewPanel;
 
 public class GeneralNoteWindow extends NoteWindow {
 
-    private static final String MESSAGE_SAVE_NOTE_SUCCESS = "Saved general note.";
-    private static final String MESSAGE_EXIT_NOTE_SUCCESS = "Exited General Note";
+    private static final String MESSAGE_SAVE_NOTE_SUCCESS = "Saved General Note.";
+    private static final String MESSAGE_EXIT_NOTE_SUCCESS = "Exited General Note.";
     private static final String WINDOW_NAME = "General Note";
 
     private final Notor notor;
 
+    private StackPane notePane;
+
     /**
      * Creates a new NoteWindow.
      */
-    public GeneralNoteWindow(Notor notor, Logic logic, ResultDisplay resultDisplay) {
+    public GeneralNoteWindow(Notor notor, Logic logic, ResultDisplay resultDisplay, StackPane notePane) {
         super(logic, resultDisplay);
         noteTextArea.setText(notor.getNote().value);
         this.notor = notor;
@@ -30,6 +34,7 @@ public class GeneralNoteWindow extends NoteWindow {
             e.consume();
             handleExit();
         });
+        this.notePane = notePane;
     }
 
     /**
@@ -39,12 +44,12 @@ public class GeneralNoteWindow extends NoteWindow {
      */
     @Override
     public String generateSuccessMessage(String message) {
-        return MESSAGE_SAVE_NOTE_SUCCESS;
+        return message;
     }
 
 
     /**
-     * Saves the file
+     * Saves the file.
      */
     @FXML
     @Override
@@ -53,6 +58,8 @@ public class GeneralNoteWindow extends NoteWindow {
         Note editedNote = Note.of(paragraph, noteLastModified());
         notor.setNote(editedNote);
         logic.executeSaveNote(notor);
+        ViewPanel viewPane = new ViewPanel(logic.getNotor().getNote());
+        notePane.getChildren().add(viewPane.getRoot());
         resultDisplay.setFeedbackToUser(generateSuccessMessage(MESSAGE_SAVE_NOTE_SUCCESS));
     }
 
