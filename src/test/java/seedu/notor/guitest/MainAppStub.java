@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 
 import seedu.notor.AppParameters;
 import seedu.notor.MainApp;
-import seedu.notor.commons.core.trie.Trie;
 import seedu.notor.logic.LogicManager;
 import seedu.notor.logic.executors.Executor;
 import seedu.notor.model.UserPrefs;

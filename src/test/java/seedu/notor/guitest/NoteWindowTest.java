@@ -2,8 +2,6 @@ package seedu.notor.guitest;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.Test;
 
 import javafx.scene.control.TextArea;

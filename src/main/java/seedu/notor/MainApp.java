@@ -40,7 +40,7 @@ public class MainApp extends Application {
 
     public static final Version VERSION = new Version(0, 2, 0, true);
 
-    protected static final Logger logger = LogsCenter.getLogger(MainApp.class);
+    protected final Logger logger = LogsCenter.getLogger(MainApp.class);
 
     protected Ui ui;
     protected Logic logic;
